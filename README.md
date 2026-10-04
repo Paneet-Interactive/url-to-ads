@@ -118,8 +118,8 @@ Tested on macOS (Apple Silicon), Node 25, HyperFrames 0.8.115, on 4 October 2026
 - Sound bed: all four moods render to WAV, and the music and SFX reach the final MP4 (AAC stereo).
 - End to end on https://nokhora.com/ (Thai site): capture → 5-frame 9:16 ad → MP4 with music
   and SFX, after two review rounds. HyperFrames `lint` 0 errors, `check` passed.
-- Install into Claude Code with `npx skills add Paneet-Interactive/url-to-ads` (run while the
-  repository was still private, with GitHub access) and from a local path.
+- Install into Claude Code from the public repository with no credentials:
+  `npx skills add Paneet-Interactive/url-to-ads -a claude-code`.
 
 **Not verified**
 
