@@ -1,0 +1,57 @@
+{
+  "unicodeRange": "U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC",
+  "presets": {
+    "biennale-yellow": {
+      "display": { "family": "Trirong", "weights": [400] },
+      "body": { "family": "Anuphan", "weights": [400, 600] }
+    },
+    "blockframe": {
+      "display": { "family": "Kanit", "weights": [800] },
+      "body": { "family": "Anuphan", "weights": [400, 500] }
+    },
+    "blue-professional": {
+      "display": { "family": "Bai Jamjuree", "weights": [700] },
+      "body": { "family": "IBM Plex Sans Thai", "weights": [400, 600] }
+    },
+    "bold-poster": {
+      "display": { "family": "Chonburi", "weights": [400] },
+      "body": { "family": "Noto Serif Thai", "weights": [400, 700] }
+    },
+    "broadside": {
+      "display": { "family": "Kanit", "weights": [900] },
+      "body": { "family": "Anuphan", "weights": [400, 600] }
+    },
+    "capsule": {
+      "display": { "family": "Taviraj", "weights": [700, 800] },
+      "body": { "family": "Anuphan", "weights": [400, 600] }
+    },
+    "cartesian": {
+      "display": { "family": "Trirong", "weights": [500] },
+      "body": { "family": "IBM Plex Sans Thai", "weights": [400, 600] }
+    },
+    "cobalt-grid": {
+      "display": { "family": "Maitree", "weights": [400] },
+      "body": { "family": "IBM Plex Sans Thai", "weights": [400, 600] }
+    },
+    "code-editorial": {
+      "display": { "family": "Taviraj", "weights": [400] },
+      "body": { "family": "IBM Plex Sans Thai", "weights": [400, 600] }
+    },
+    "coral": {
+      "display": { "family": "Kanit", "weights": [700] },
+      "body": { "family": "Sarabun", "weights": [300, 400] }
+    },
+    "creative-mode": {
+      "display": { "family": "Prompt", "weights": [900] },
+      "body": { "family": "Anuphan", "weights": [400, 600] }
+    },
+    "daisy-days": {
+      "display": { "family": "Mitr", "weights": [600] },
+      "body": { "family": "Mali", "weights": [500, 600] }
+    },
+    "editorial-forest": {
+      "display": { "family": "Noto Serif Thai", "weights": [500] },
+      "body": { "family": "Noto Serif Thai", "weights": [400] }
+    }
+  }
+}
