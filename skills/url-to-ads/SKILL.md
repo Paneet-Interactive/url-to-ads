@@ -36,6 +36,40 @@ right HyperFrames workflow and applies the Thai layer. It never replaces a Hyper
 - **Do not patch HyperFrames.** Thai fixes are added as a layer around it (presets, scripts,
   instructions). If a fix seems to need a change inside HyperFrames, stop and tell the user.
 
+`<skill>` below is the directory that contains this `SKILL.md` (in a Claude Code plugin install,
+`${CLAUDE_PLUGIN_ROOT}/skills/url-to-ads`).
+
+## 0. Prerequisites — the skill installs them, the user prepares nothing
+
+Run this at the start of every request (it takes a few seconds when everything is present):
+
+```bash
+bash "<skill>/scripts/preflight.sh" check                                         # macOS / Linux
+powershell -ExecutionPolicy Bypass -File "<skill>/scripts/preflight.ps1" check   # Windows
+```
+
+Each line is `ok <item> …`, `missing <item> <how it installs>`, or `path <dir> …`. Items: `node`
+(22+), `ffmpeg` (ffmpeg + ffprobe), `browser` (HyperFrames' headless Chrome). Exit 0 → everything
+is present; go to § 1.
+
+For each `missing` line, in this order — `node`, `ffmpeg`, `browser`:
+
+1. Tell the user in one line what is missing and how it will be installed (the text after the item
+   name), and ask them to approve that one install. One item per question; never batch them.
+2. On approval, run `bash "<skill>/scripts/preflight.sh" install <item>` (Windows:
+   `… preflight.ps1 install <item>`). On macOS it uses Homebrew when Homebrew is installed and
+   writable by this user; otherwise it installs into `~/.url-to-ads` with no password (Node's
+   official tarball, static FFmpeg builds, both checksum-verified) and adds `~/.url-to-ads/bin` to
+   `~/.zprofile` and `~/.bash_profile`. Linux uses apt, Windows uses winget, and `browser` uses
+   `npx hyperframes browser ensure` everywhere. The script re-checks the item after installing.
+3. If the user declines, or an install exits non-zero, stop. Say exactly which item failed and quote
+   the failing command and its error output. Do not continue to § 1 with anything missing, and do
+   not substitute another install method.
+
+After the last install, run `check` again; continue only on exit 0. If `check` prints a `path`
+line, start every shell command for the rest of the session with the `export PATH=…` it gives —
+the shell this session started with does not see the new tools yet.
+
 ## 1. Make sure HyperFrames is installed
 
 Install or refresh the HyperFrames core set plus the URL workflow (a current install is a no-op):
@@ -75,8 +109,6 @@ If the command fails, surface the error and stop. Do not reconstruct the workflo
 | Storyboard / ad copy       | Thai copy guidance and claim rules (§ 3.4)   | Built       |
 | Narration (TTS)            | None — on-screen text carries the copy (§ 3.3) | Built     |
 | Captions                   | Thai word segmentation + brand-name dictionary (§ 3.2) | Built |
-
-`<skill>` below is the directory that contains this `SKILL.md`.
 
 ### 3.1 Thai fonts
 

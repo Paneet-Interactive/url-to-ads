@@ -18,52 +18,25 @@ caption segmentation, Thai ad-copy rules, vertical-ad layout rules, and a key-fr
 Thai ads have **no voice-over**: every Thai text-to-speech voice we know of needs an API key or
 has a non-commercial license, and this pack uses neither. The on-screen text carries the message.
 
-## Requirements
-
-| Need                                                   | Why                                         |
-| ------------------------------------------------------ | ------------------------------------------- |
-| An AI coding agent: Claude Code, Codex, or Cursor      | The agent runs the skills                   |
-| Node.js **22 or newer**                                | HyperFrames requires it                     |
-| **FFmpeg** (with `ffprobe`) on your `PATH`             | Rendering and audio probing                 |
-| Python 3.8+ with `kokoro-onnx` + `soundfile` (optional) | Only for an English voice-over (Kokoro)     |
-
-Install FFmpeg:
-
-- macOS: `brew install ffmpeg`
-- Ubuntu / Debian: `sudo apt install ffmpeg`
-- Windows: `winget install Gyan.FFmpeg`
-
-HyperFrames downloads its own headless Chrome on first use.
-
 ## Install
 
-The pack installs with the open [`skills`](https://www.npmjs.com/package/skills) CLI, alongside
-HyperFrames' skills. Run these in the project folder where you want to make videos (add `-g` to
-install for your user instead).
-
-**Claude Code**
+In a terminal, with [Claude Code](https://code.claude.com) installed:
 
 ```bash
-npx skills add Paneet-Interactive/url-to-ads -a claude-code
-npx hyperframes skills update product-launch-video
+claude plugin marketplace add Paneet-Interactive/url-to-ads
+claude plugin install url-to-ads@paneet-interactive
 ```
 
-**Codex**
+Then start Claude Code and ask your agent for an ad (see **Use**). Nothing else to set up: Node.js,
+FFmpeg, HyperFrames, and its headless Chrome — the skill installs these for you on first run,
+asking before each install.
+
+**Codex or Cursor** — these install through the [`skills`](https://www.npmjs.com/package/skills)
+CLI, which runs on Node.js:
 
 ```bash
-npx skills add Paneet-Interactive/url-to-ads -a codex
-npx hyperframes skills update product-launch-video
+npx skills add Paneet-Interactive/url-to-ads -a codex    # or: -a cursor
 ```
-
-**Cursor**
-
-```bash
-npx skills add Paneet-Interactive/url-to-ads -a cursor
-npx hyperframes skills update product-launch-video
-```
-
-The second command installs HyperFrames' core skills and its URL-to-video workflow. The skill also
-runs it for you the first time if it is missing.
 
 ## Use
 
@@ -120,9 +93,20 @@ Tested on macOS (Apple Silicon), Node 25, HyperFrames 0.8.115, on 4 October 2026
   and SFX, after two review rounds. HyperFrames `lint` 0 errors, `check` passed.
 - Install into Claude Code from the public repository with no credentials:
   `npx skills add Paneet-Interactive/url-to-ads -a claude-code`.
+- Plugin packaging: `claude plugin validate --strict` passes for the marketplace and the plugin,
+  and `claude plugin marketplace add` + `claude plugin install url-to-ads@paneet-interactive`
+  installs it (tested from a local checkout, in a separate Claude config).
+- First-run prerequisites on a simulated clean Mac (empty home folder, only system folders on
+  `PATH`, Homebrew not used): `preflight.sh` installed Node 22.23.3, FFmpeg 6.0 and HyperFrames'
+  Chrome with no password, then HyperFrames install, capture of https://nokhora.com/, sound bed,
+  assembly, lint (0 errors) and render produced an MP4 with AAC audio, using only those tools. The
+  frames were reused from the earlier run, not written again by an agent.
 
 **Not verified**
 
+- A real clean macOS user account end to end: plugin install from GitHub, the agent's first run
+  (approving each install), and one Thai ad — including what the user has to click or type there.
+- `preflight.sh` with Homebrew on macOS, on Linux (apt), and `preflight.ps1` on Windows (winget).
 - Installing and running in **Codex** and **Cursor**.
 - The agent picking this skill on its own from a plain request (the E2E run followed the skill
   step by step in Claude Code).
@@ -135,6 +119,10 @@ Tested on macOS (Apple Silicon), Node 25, HyperFrames 0.8.115, on 4 October 2026
 
 ## Known limits
 
+- On a Mac without a Homebrew it can write to, the skill installs Node and FFmpeg into
+  `~/.url-to-ads` (no password) and adds that folder to your shell profile.
+- The optional English voice-over (Kokoro) needs Python with `kokoro-onnx` and `soundfile`; the
+  skill does not install these.
 - Thai ads have no voice-over (see above).
 - Without image captioning, asset names from the capture are guesses; the skill tells the agent
   to open every image before using it.
@@ -143,12 +131,14 @@ Tested on macOS (Apple Silicon), Node 25, HyperFrames 0.8.115, on 4 October 2026
 ## Repository layout
 
 ```
+.claude-plugin/                Claude Code plugin + marketplace manifests (the repo is the plugin)
 skills/url-to-ads/
   SKILL.md                     routing, rules, and the Thai layer the agent follows
   thai-fonts.json              Thai display + body pairing per frame preset
   fonts/                       bundled Thai font files + licenses
   references/                  Thai ad-copy rules, vertical ad layout + review checklist
-  scripts/                     thai-fonts · thai-captions · thai-copy · audio-bed (+ lib/)
+  scripts/                     preflight (.sh / .ps1) · thai-fonts · thai-captions · thai-copy ·
+                               audio-bed (+ lib/)
 scripts/sync-fonts.mjs         maintainer: refresh fonts/ from @fontsource (npm install first)
 docs/decisions/                decision briefs
 ```
