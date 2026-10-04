@@ -1,0 +1,10 @@
+{
+  "name": "url-to-ads",
+  "version": "0.1.0",
+  "description": "URL to Ads by Paneet — turn a website URL into a short video ad, with first-class Thai support. Built on HyperFrames; no keys, no login.",
+  "author": { "name": "Paneet Interactive" },
+  "homepage": "https://github.com/Paneet-Interactive/url-to-ads",
+  "repository": "https://github.com/Paneet-Interactive/url-to-ads",
+  "license": "Apache-2.0",
+  "keywords": ["video", "ads", "thai", "hyperframes"]
+}

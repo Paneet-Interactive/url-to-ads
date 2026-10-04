@@ -1,0 +1,14 @@
+{
+  "name": "paneet-interactive",
+  "owner": { "name": "Paneet Interactive" },
+  "metadata": {
+    "description": "URL to Ads by Paneet — turn a website URL into a short video ad, with first-class Thai support."
+  },
+  "plugins": [
+    {
+      "name": "url-to-ads",
+      "source": "./",
+      "description": "URL to Ads by Paneet — turn a website URL into a short video ad, with first-class Thai support. Built on HyperFrames; no keys, no login."
+    }
+  ]
+}
