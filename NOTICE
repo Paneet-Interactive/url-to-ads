@@ -1,0 +1,12 @@
+URL to Ads by Paneet
+Copyright 2026 Paneet Interactive
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project is a skill pack that runs on top of HyperFrames
+(https://github.com/heygen-com/hyperframes), Copyright HeyGen,
+licensed under the Apache License, Version 2.0.
+
+The Thai font files in skills/url-to-ads/fonts/ are licensed under the
+SIL Open Font License, Version 1.1; their license texts are in
+skills/url-to-ads/fonts/licenses/.

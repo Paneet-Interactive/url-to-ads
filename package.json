@@ -1,0 +1,32 @@
+{
+  "name": "url-to-ads",
+  "version": "0.0.0",
+  "private": true,
+  "description": "URL to Ads by Paneet — turn a website URL into a short video ad, with first-class Thai support. A skill pack on top of HyperFrames.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "hyperframes",
+    "video",
+    "ads",
+    "thai",
+    "agent-skills"
+  ],
+  "scripts": {
+    "sync-fonts": "node scripts/sync-fonts.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/anuphan": "5.3.0",
+    "@fontsource/bai-jamjuree": "5.3.0",
+    "@fontsource/chonburi": "5.3.0",
+    "@fontsource/ibm-plex-sans-thai": "5.3.0",
+    "@fontsource/kanit": "5.3.0",
+    "@fontsource/maitree": "5.3.0",
+    "@fontsource/mali": "5.3.0",
+    "@fontsource/mitr": "5.3.0",
+    "@fontsource/noto-serif-thai": "5.3.0",
+    "@fontsource/prompt": "5.3.0",
+    "@fontsource/sarabun": "5.3.0",
+    "@fontsource/taviraj": "5.3.0",
+    "@fontsource/trirong": "5.3.0"
+  }
+}
