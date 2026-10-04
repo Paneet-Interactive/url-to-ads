@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 // sync-fonts.mjs — maintainer tool. Copies the Thai-subset WOFF2 files that
-// skills/url-to-ads/thai-fonts.json needs from node_modules/@fontsource/* into
+// skills/url-to-ads/thai-fonts.json needs from tools/node_modules/@fontsource/* into
 // skills/url-to-ads/fonts/, plus each family's OFL license. The skill ships these
 // files so a user's install works offline and never fetches Google Fonts.
 //
-//   npm install && node scripts/sync-fonts.mjs
+// Lives in tools/ with its own package.json so the repo root (the Claude Code plugin) has none:
+// a root package.json makes the plugin installer run npm install for every user.
+//
+//   cd tools && npm install && npm run sync-fonts
 
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const toolsDir = dirname(fileURLToPath(import.meta.url));
+const root = resolve(toolsDir, "..");
 const skillDir = join(root, "skills/url-to-ads");
 const config = JSON.parse(readFileSync(join(skillDir, "thai-fonts.json"), "utf8"));
 const outDir = join(skillDir, "fonts");
@@ -31,7 +35,7 @@ mkdirSync(join(outDir, "licenses"), { recursive: true });
 
 let count = 0;
 for (const [family, weights] of need) {
-  const pkg = join(root, "node_modules/@fontsource", slug(family));
+  const pkg = join(toolsDir, "node_modules/@fontsource", slug(family));
   if (!existsSync(pkg)) throw new Error(`missing @fontsource/${slug(family)} — run npm install`);
   const ranges = JSON.parse(readFileSync(join(pkg, "unicode.json"), "utf8"));
   if (ranges.thai !== config.unicodeRange)
