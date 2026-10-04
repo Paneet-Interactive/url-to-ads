@@ -14,7 +14,15 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { config, fontsDir, thaiFaces } from "./lib/thai-font-faces.mjs";
+import {
+  config,
+  declaredThaiFamilies,
+  fontsDir,
+  SECTION_END as END,
+  SECTION_START as START,
+  stripThaiSection,
+  thaiFaces,
+} from "./lib/thai-font-faces.mjs";
 
 const [command, ...argv] = process.argv.slice(2);
 const flag = (name, def) => {
@@ -28,8 +36,6 @@ const die = (m) => {
 
 const projectDir = resolve(flag("hyperframes", "."));
 const THAI = /[ก-๛]/;
-const START = "<!-- url-to-ads:thai-fonts:start -->";
-const END = "<!-- url-to-ads:thai-fonts:end -->";
 const PAIR = "<!-- url-to-ads:thai-fonts:pair "; // machine-readable pairing, read by thai-captions.mjs
 
 if (command === "apply") apply();
@@ -44,9 +50,14 @@ function apply() {
   const framePath = join(projectDir, "frame.md");
   if (!existsSync(framePath)) die(`no frame.md in ${projectDir} — run HyperFrames' build-frame.mjs first`);
 
+  const md = stripThaiSection(readFileSync(framePath, "utf8"));
+  // The site's own Thai font (staged by build-frame) wins; never redeclare a family it already covers.
+  const siteThai = declaredThaiFamilies(md);
+  const all = thaiFaces(pairing);
+  const faces = all.filter((f) => !siteThai.has(f.family.toLowerCase()));
+  const covered = [...new Set(all.filter((f) => !faces.includes(f)).map((f) => f.family))];
   const outDir = join(projectDir, "assets/fonts");
   mkdirSync(outDir, { recursive: true });
-  const faces = thaiFaces(pairing);
   for (const { file } of faces) {
     const src = join(fontsDir, file);
     if (!existsSync(src)) die(`missing bundled font ${file} — reinstall the url-to-ads skill`);
@@ -68,21 +79,26 @@ function apply() {
     `- Thai has no uppercase: ignore \`upper: true\` / letter-spacing on Thai strings (tracking breaks ` +
     `stacked vowels and tone marks). Keep line-height ≥ 1.3 on Thai text so marks above and below ` +
     `the line are not clipped.\n` +
-    `- Never name any other Thai font (Thonburi, Tahoma, Leelawadee, …) — it does not exist on the render machine.\n\n` +
-    `Paste this \`<style>\` into every frame's \`<head>\`/\`<template>\` that shows Thai text:\n\n` +
-    "```html\n<style>\n" +
-    faces.map((f) => f.css).join("\n") +
-    "\n</style>\n```\n\n" +
+    `- Never name any other Thai font (Thonburi, Tahoma, Leelawadee, …) — it does not exist on the render machine.\n` +
+    (covered.length
+      ? `- ${covered.map((f) => `"${f}"`).join(", ")}: the site's own Thai font — its faces are in the Font loading ` +
+        `block above; use that block for it.\n`
+      : "") +
+    "\n" +
+    (faces.length
+      ? `Paste this \`<style>\` into every frame's \`<head>\`/\`<template>\` that shows Thai text:\n\n` +
+        "```html\n<style>\n" +
+        faces.map((f) => f.css).join("\n") +
+        "\n</style>\n```\n\n"
+      : "No extra `@font-face` is needed: the Font loading block above already covers Thai.\n\n") +
     `Verify before render: \`node "${fileURLToPath(import.meta.url)}" check --hyperframes .\`\n` +
     `${END}\n`;
 
-  let md = readFileSync(framePath, "utf8");
-  const s = md.indexOf(START);
-  const e = md.indexOf(END);
-  if (s >= 0 && e > s) md = md.slice(0, s) + md.slice(e + END.length + 1);
-  md = `${md.replace(/\s*$/, "")}\n\n${section}`;
-  writeFileSync(framePath, md);
-  console.log(`✓ thai-fonts: ${preset} → display "${d}", body "${b}"; staged ${faces.length} face(s) → assets/fonts/ + section in frame.md`);
+  writeFileSync(framePath, `${md.replace(/\s*$/, "")}\n\n${section}`);
+  console.log(
+    `✓ thai-fonts: ${preset} → display "${d}", body "${b}"; staged ${faces.length} face(s) → assets/fonts/ + section in frame.md` +
+      (covered.length ? ` · site's own Thai font used for ${covered.join(", ")}` : ""),
+  );
 }
 
 function check() {

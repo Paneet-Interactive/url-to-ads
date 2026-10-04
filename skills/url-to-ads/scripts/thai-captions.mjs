@@ -15,7 +15,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { config, thaiFaces } from "./lib/thai-font-faces.mjs";
+import { config, declaredThaiFamilies, stripThaiSection, thaiFaces } from "./lib/thai-font-faces.mjs";
 import { alignTimings, groupTokens, isThai, segmentThai } from "./lib/thai-text.mjs";
 
 const argv = process.argv.slice(2);
@@ -135,6 +135,8 @@ if (!html.includes(MARK)) {
   const latinDisplay = new Set();
   for (const m of frameMd.matchAll(/^\s+([\w-]+):\s*\{[^}]*fontFamily:\s*"([^"]+)"/gm))
     if (/display|headline|title|hero|numeral/.test(m[1])) latinDisplay.add(m[2].toLowerCase());
+  // The site's own Thai faces (HyperFrames already put them in this file) are not redeclared.
+  const siteThai = declaredThaiFamilies(stripThaiSection(frameMd));
   const thaiNames = new Set([pairing.display.family, pairing.body.family].map((f) => f.toLowerCase()));
   html = html.replace(/(@font-face\s*\{[^}]*\})|font-family(\s*):(\s*)([^;}<]+)/g, (m, face, s1, s2, value) => {
     if (face) return m;
@@ -148,7 +150,10 @@ if (!html.includes(MARK)) {
   });
   const css =
     `<style>\n${MARK}\n` +
-    thaiFaces(pairing).map((f) => f.css).join("\n") +
+    thaiFaces(pairing)
+      .filter((f) => !siteThai.has(f.family.toLowerCase()))
+      .map((f) => f.css)
+      .join("\n") +
     `\n.caption-line, .caption-group { column-gap: 0 !important; word-spacing: normal !important; }\n` +
     `.caption-word { letter-spacing: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }\n` +
     `.caption-line, .caption-group { line-height: 1.45 !important; }\n</style>\n`;
