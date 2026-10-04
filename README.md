@@ -139,7 +139,8 @@ skills/url-to-ads/
   references/                  Thai ad-copy rules, vertical ad layout + review checklist
   scripts/                     preflight (.sh / .ps1) · thai-fonts · thai-captions · thai-copy ·
                                audio-bed (+ lib/)
-scripts/sync-fonts.mjs         maintainer: refresh fonts/ from @fontsource (npm install first)
+tools/                         maintainer only, not shipped: refresh fonts/ from @fontsource
+                               (cd tools && npm install && npm run sync-fonts)
 docs/decisions/                decision briefs
 ```
 
