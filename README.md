@@ -158,7 +158,7 @@ scripts/sync-fonts.mjs         maintainer: refresh fonts/ from @fontsource (npm 
 docs/decisions/                decision briefs
 ```
 
-Run the unit tests with `node --test skills/url-to-ads/scripts/thai-text.test.mjs`.
+Run the unit tests with `node --test "skills/url-to-ads/scripts/*.test.mjs"`.
 
 ## License
 

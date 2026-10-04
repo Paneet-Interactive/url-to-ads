@@ -31,3 +31,36 @@ export function thaiFaces(pairing) {
     }
   return faces;
 }
+
+// The section thai-fonts.mjs appends to frame.md, between these markers.
+export const SECTION_START = "<!-- url-to-ads:thai-fonts:start -->";
+export const SECTION_END = "<!-- url-to-ads:thai-fonts:end -->";
+export function stripThaiSection(md) {
+  const s = md.indexOf(SECTION_START);
+  const e = md.indexOf(SECTION_END);
+  return s >= 0 && e > s ? md.slice(0, s) + md.slice(e + SECTION_END.length + 1) : md;
+}
+
+// True when a CSS unicode-range overlaps the Thai block (U+0E01–0E5B).
+export function coversThai(range) {
+  return range.split(",").some((part) => {
+    const m = /U\+([0-9A-F?]+)(?:-([0-9A-F]+))?/i.exec(part.trim());
+    if (!m) return false;
+    const lo = parseInt(m[1].replace(/\?/g, "0"), 16);
+    const hi = m[2] ? parseInt(m[2], 16) : parseInt(m[1].replace(/\?/g, "F"), 16);
+    return lo <= 0x0e5b && hi >= 0x0e01;
+  });
+}
+
+// Families that already have a Thai-covering @font-face in the given CSS/markdown — e.g. the site's
+// own Thai font staged by HyperFrames' build-frame. A bundled face with the same family name would
+// be a second, competing declaration, so callers skip those.
+export function declaredThaiFamilies(text) {
+  const out = new Set();
+  for (const [, body] of text.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
+    const family = /font-family\s*:\s*["']?([^"';]+)/.exec(body)?.[1]?.trim();
+    const range = /unicode-range\s*:\s*([^;]+)/.exec(body)?.[1];
+    if (family && range && coversThai(range)) out.add(family.toLowerCase());
+  }
+  return out;
+}
