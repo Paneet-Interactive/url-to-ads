@@ -41,30 +41,24 @@ The pack installs with the open [`skills`](https://www.npmjs.com/package/skills)
 HyperFrames' skills. Run these in the project folder where you want to make videos (add `-g` to
 install for your user instead).
 
-The repository is private for now. With access to it, install from a local clone:
-
-```bash
-git clone https://github.com/Paneet-Interactive/url-to-ads.git
-```
-
 **Claude Code**
 
 ```bash
-npx skills add ./url-to-ads -a claude-code
+npx skills add Paneet-Interactive/url-to-ads -a claude-code
 npx hyperframes skills update product-launch-video
 ```
 
 **Codex**
 
 ```bash
-npx skills add ./url-to-ads -a codex
+npx skills add Paneet-Interactive/url-to-ads -a codex
 npx hyperframes skills update product-launch-video
 ```
 
 **Cursor**
 
 ```bash
-npx skills add ./url-to-ads -a cursor
+npx skills add Paneet-Interactive/url-to-ads -a cursor
 npx hyperframes skills update product-launch-video
 ```
 
@@ -124,7 +118,8 @@ Tested on macOS (Apple Silicon), Node 25, HyperFrames 0.8.115, on 4 October 2026
 - Sound bed: all four moods render to WAV, and the music and SFX reach the final MP4 (AAC stereo).
 - End to end on https://nokhora.com/ (Thai site): capture → 5-frame 9:16 ad → MP4 with music
   and SFX, after two review rounds. HyperFrames `lint` 0 errors, `check` passed.
-- Install into Claude Code with `npx skills add` from a local path.
+- Install into Claude Code with `npx skills add Paneet-Interactive/url-to-ads` (run while the
+  repository was still private, with GitHub access) and from a local path.
 
 **Not verified**
 
